@@ -181,6 +181,12 @@ stock_sectors = {
     "Infrastructure & Industrial": [
         "LT", "ADANIENT", "ADANIPORTS", "JSWSTEEL",
         "TATASTEEL", "ULTRACEMCO", "BEL"
+    ],
+        "Market Indices & Jio": [
+        "NIFTY 50",
+        "SENSEX",
+        "RELIANCE",
+        "JIOFIN"
     ]
 }
 
@@ -194,7 +200,12 @@ stock_name = st.sidebar.selectbox(
     stock_sectors[selected_sector]
 )
 
-symbol = stock_name + ".NS"
+ticker_map = {
+    "NIFTY 50": "^NSEI",
+    "SENSEX": "^BSESN"
+}
+
+symbol = ticker_map.get(stock_name, stock_name + ".NS")
 if "last_refresh_time" not in st.session_state:
     st.session_state.last_refresh_time = datetime.now()
 period = st.selectbox("Historical data range", ["6mo", "1y", "2y", "5y"], index=1)
