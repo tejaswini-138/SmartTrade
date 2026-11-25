@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import math
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 st.set_page_config(page_title="SmartTrade AI", page_icon="📈", layout="wide")
 
@@ -195,13 +195,26 @@ stock_name = st.sidebar.selectbox(
 )
 
 symbol = stock_name + ".NS"
+if "last_refresh_time" not in st.session_state:
+    st.session_state.last_refresh_time = datetime.now()
 period = st.selectbox("Historical data range", ["6mo", "1y", "2y", "5y"], index=1)
 st.info("NSE ticker symbols are used with Yahoo Finance data. Availability may vary.")
-refresh = st.button("🔄 Refresh data")
+refresh = st.sidebar.button("🔄 Refresh Data")
 
 if refresh:
     load_data.clear()
+    get_market_data.clear()
+    st.session_state.last_refresh_time = datetime.now()
+    st.rerun()
 
+st.sidebar.markdown("---")
+st.sidebar.markdown("### 🕒 Dashboard Status")
+
+last_updated = st.session_state.last_refresh_time.strftime(
+    "%d %b %Y • %I:%M:%S %p"
+)
+
+st.sidebar.success(f"Last refreshed: {last_updated}")
 with st.spinner("Loading historical market data..."):
     raw = load_data(symbol, period)
 
